@@ -2,11 +2,14 @@
 ## Radio Direction Finder plugin for Euroscope
 
 Having problems finding the tag for the aircraft, when the pilot calls you on your frequency? At least I have had challenges with this, when covering large sectors on Vatsim, especially FSS positions. Inspired by this video (https://www.youtube.com/watch?v=KpLKP_CxaLo), showing how RDF works at Eurocontrol, I have developed this plugin, with 2 choices for letting Euroscope help you find the calling pilot.
-1. Using the Radio Direction Finder view, you will get the same functionality as shown in the video: highlighting the calling aircraft by drawing a circle around the tag. After the pilots transmission has ended, you can still get the tag highlighted by pressing the middle mouse button. 
+1. Using the Radio Direction Finder view, you will get the same functionality as shown in the video: highlighting the calling aircraft by drawing a circle around the tag. 
+
    ![RDF circle around the "talking aircraft"](documentation/RDFCircle.png)
+   After the pilots transmission has ended, you can still get the tag highlighted by pressing the middle mouse button. 
    If the tag is outside the displayed area, a line will be drawed in the direction of the plane.
-   ![RDF line drawn from the center in the direction of the "talking aircraft"](documentation/RDFCircle.png)
-Please note, that this only works, if you are using the Standard ES Radar View. In case you are using another plugin defining it's own views, you should probably have a look at choice no 2 below.
+   
+   ![RDF line drawn from the center in the direction of the "talking aircraft"](documentation/RDFLine.png)
+   Please note, that this only works, if you are using the Standard ES Radar View. In case you are using another plugin defining it's own views, you should probably have a look at choice no 2 below.
 
 
 1. In case you are already using another radar view than Euroscope's standard radar view, I have made a "poorman's solution", where a flashing text will be displayed in the tag of the aircraft of the calling pilot.
@@ -16,7 +19,7 @@ Please note, that this only works, if you are using the Standard ES Radar View. 
 ## Installation of plugin
 
 1. For your own sake: make a backup copy of your Euroscope folder with your settings, profiles, asr-files etc. (typically under Documents\Euroscope)
-1. Download the plugin DLL from here: [RDFPlugin.DLL](Release/RDFPlugin.dll), and move it to your Documents\Euroscope\Plugins folder
+1. Download the plugin DLL from here: [RDFPlugin.DLL](raw/master/Release/RDFPlugin.dll), and move it to your Documents\Euroscope\Plugins folder
 1. Start Euroscope. Click on the menu button "Other SET", and select the "Plug-ins..." menu item. ![ES Plugin menu](documentation/ESPluginMenu.png)
 1. The plugin dialog should now be open. Click "Load", select the just downloaded "RDFPlugin.dll", and if you click on the "RDF Plugin for Euroscope" line in the list, it should something like this (besides the DLL filename directory, of course):
 ![Plugin dialog with RDF Plugin loaded](documentation/ESPluginDialog.png)
@@ -51,6 +54,9 @@ In case you are using another kind of radar view than the standard one, you prob
 1. Once again, click "Add item", and replace the "Next line" selection with "RDF plugin for Euroscope/RX in progress".
 1. Finally, click "Ok" and you are ready to connect to vatsim.
 
+## Questions?
+You can reach me on claus_hemberg.jorgensen (at) vatsim-scandinavia.org
+(Disclaimer: this is my very first ES plugin, I might not have all the answers :smile: )
 
 ## Other possibilities
 
