@@ -2,9 +2,10 @@
 #include "CRDFScreen.h"
 
 
-CRDFScreen::CRDFScreen(CRDFPlugin *plugin)
+CRDFScreen::CRDFScreen(CRDFPlugin *plugin, COLORREF rdfColor)
 {
 	this->rdfPlugin = plugin;
+	this->rdfColor = rdfColor;
 }
 
 
@@ -38,7 +39,9 @@ void CRDFScreen::OnRefresh(HDC hDC, int Phase)
 				POINT p = ConvertCoordFromPositionToPixel(radarTarget.GetPosition().GetPosition());
 				
 				HGDIOBJ oldBrush = SelectObject(hDC, GetStockObject(HOLLOW_BRUSH));
-				// HGDIOBJ oldPen = SelectObject(hDC, GetStockObject(BLACK_PEN));
+				HPEN hPen = CreatePen(PS_SOLID, 1, rdfColor);
+				HGDIOBJ oldPen = SelectObject(hDC, hPen);
+
 				if (PlaneIsVisible(p, GetRadarArea()))
 				{
 					Ellipse(hDC, p.x - 50, p.y - 50, p.x + 50, p.y + 50);
@@ -53,7 +56,9 @@ void CRDFScreen::OnRefresh(HDC hDC, int Phase)
 				}
 
 				SelectObject(hDC, oldBrush);
-				// SelectObject(hDC, oldPen);
+				SelectObject(hDC, oldPen);
+
+				DeleteObject(hPen);
 			}
 		}
 	}

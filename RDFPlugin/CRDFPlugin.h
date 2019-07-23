@@ -8,7 +8,7 @@ using namespace std;
 using namespace EuroScopePlugIn;
 
 const string MY_PLUGIN_NAME = "RDF Plugin for Euroscope";
-const string MY_PLUGIN_VERSION = "1.0";
+const string MY_PLUGIN_VERSION = "1.1.0";
 const string MY_PLUGIN_DEVELOPER = "Claus Hemberg Joergensen";
 const string MY_PLUGIN_COPYRIGHT = "Free to be distributed as source code";
 
@@ -28,7 +28,6 @@ public:
 	virtual void OnVoiceReceiveStarted(CGrountToAirChannel Channel);
 	virtual void OnVoiceReceiveEnded(CGrountToAirChannel Channel);
 	virtual CRadarScreen *OnRadarScreenCreated(const char * sDisplayName, bool NeedRadarContent, bool GeoReferenced, bool CanBeSaved, bool CanBeCreated);
-	void OnGetTagItem(EuroScopePlugIn::CFlightPlan FlightPlan, EuroScopePlugIn::CRadarTarget RadarTarget, int ItemCode, int TagData, char sItemString[16], int * pColorCode, COLORREF * pRGB, double * pFontSize);
 
 	inline string GetActiveTransmittingPilot()
 	{

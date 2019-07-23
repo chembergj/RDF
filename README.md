@@ -1,8 +1,9 @@
 # RDF
 ## Radio Direction Finder plugin for Euroscope
 
-Having problems finding the tag for the aircraft, when the pilot calls you on your frequency? At least I have had challenges with this, when covering large sectors on Vatsim, especially FSS positions. Inspired by this video (https://www.youtube.com/watch?v=KpLKP_CxaLo), showing how RDF works at Eurocontrol, I have developed this plugin, with 2 choices for letting Euroscope help you find the calling pilot.
-1. Using the Radio Direction Finder view, you will get the same functionality as shown in the video: highlighting the calling aircraft by drawing a circle around the tag. 
+Having problems finding the tag for the aircraft, when the pilot calls you on your frequency? At least I have had challenges with this, when covering large sectors on Vatsim, especially FSS positions. Inspired by this video (https://www.youtube.com/watch?v=KpLKP_CxaLo), showing how RDF works at Eurocontrol, I have developed this plugin, letting Euroscope help you find the calling pilot.
+
+Here is an example of, how you will get the same functionality as shown in the video: highlighting the calling aircraft by drawing a circle around the tag. 
 
    ![RDF circle around the "talking aircraft"](documentation/RDFCircle.png)
    
@@ -11,50 +12,53 @@ Having problems finding the tag for the aircraft, when the pilot calls you on yo
    
    ![RDF line drawn from the center in the direction of the "talking aircraft"](documentation/RDFLine.png)
    
-   Please note, that this only works, if you are using the Standard ES Radar View. In case you are using another plugin defining it's own views, you should probably have a look at choice no 2 below.
-
-
-1. In case you are already using another radar view than Euroscope's standard radar view, I have made a "poorman's solution", where a flashing text will be displayed in the tag of the aircraft of the calling pilot.
-
-![Example of flashing ****RX***** tag when pilot talks on your frequency](documentation/RDFtag.png)
 
 ## Installation of plugin
 
 1. For your own sake: make a backup copy of your Euroscope folder with your settings, profiles, asr-files etc. (typically under Documents\Euroscope)
 1. Download the plugin DLL from here: [RDFPlugin.DLL](https://raw.githubusercontent.com/chembergj/RDF/master/Release/RDFPlugin.dll), and move it to your Documents\Euroscope\Plugins folder
 1. Start Euroscope. Click on the menu button "Other SET", and select the "Plug-ins..." menu item. ![ES Plugin menu](documentation/ESPluginMenu.png)
-1. The plugin dialog should now be open. Click "Load", select the just downloaded "RDFPlugin.dll", and if you click on the "RDF Plugin for Euroscope" line in the list, it should something like this (besides the DLL filename directory, of course):
+1. The plugin dialog should now be open. Click "Load", and select the just downloaded "RDFPlugin.dll"
+1. Click on the "RDF Plugin for Euroscope" line in the list, and move "Standard ES radar screen" from the "Forbidden to draw on types" list to the "Allowed to draw on types" list, by clicking the "<<"  button. It should something like this (besides the DLL filename directory, of course):
 ![Plugin dialog with RDF Plugin loaded](documentation/ESPluginDialog.png)
-1. Click "Close". That's (almost) it. 
+1. Click "Close". That's it. 
 
-## How to use - on Euroscope standard radar view.
-If your current ES setup is using the Euroscope standard radar view, you can use the graphical RDF, where a ring is drawn around the plane controlled by the pilot currently speaking on the frequency.
-1. Using a texteditor (notepad, notepad++ or whatever), open the .asr file that you are using in your ES setup. On the very first line, this text MUST be found:
-   > DisplayTypeName:Standard ES radar screen
-   
-   If this is NOT the case, you should not continue, since this will probably break your configuration with an already installed plugin, that you are using. Instead jump to the section "How to use - on non-standard views"
-1. Change this to: 
-   > DisplayTypeName:Radio Direction Finder
-
-1. Save the file, start Euroscope, and open the edited .asr-file and open it in Euroscope. Your radar screen should look no different than usual.
-1. Connect to Vatsim, and enjoy that either:
-   1. If the "talking aircraft" is inside your radar view, a circle is drawn around the tag. 
-   1. If the aircraft is outside your radar view, a line is drawn from the screen centre in the direction of the aircraft. Scroll in the direction and you will find the aircraft.
-   1. In case you forgot, which aircraft just called, just press the middle button of your mouse, and the circle will be drawn again.
+If you want the plugin to draw on other display types than just the "Standard ES radar screen", feel free to move them from the "Forbidden..." list to the "Allowed..." list.
 
 No more *"Please say callsign again.."* :smile:
 
+## How to use
+1. If the "talking aircraft" is inside your radar view, a circle is drawn around the tag. 
+1. If the aircraft is outside your radar view, a line is drawn from the screen centre in the direction of the aircraft. Scroll in the direction and you will find the aircraft.
+1. In case you forgot, which aircraft just called, just press the middle button of your mouse, and the circle will be drawn again.
 
-## How to use - on non-standard views
-In case you are using another kind of radar view than the standard one, you probably also have another plugin loaded, and it's functionality would be removed, if you changed the DisplayTypeName in your .asr file, so please don't do that. As an alternative, not a great one, but at least an alternative, I have made a flashing tag, indicating the active pilot. How to install (the choice of which tag's to edit might depend on your current tag configuration as well as your choice of correlation-mode, the suggestions below will work well with correlation-mode Easy).
+## Color configuration
+As default, the circle and line is drawn in white. In case you want to customize this, open your plugin configuration file in a text editor. The name and location of the file can be found by clicking  "Other Set", in the menu click "Settings files setup".
 
-1. Open the TAG editor (in the menu of the "Other SET" menubutton)
-1. In "TAG Type" , select "Correlated A+C mode", and for "Tagging level" select "untagged".
-1. Click the "Add item" button. 
-1. In the "Tag item type" drop down, replace the selection of "Next line" with "RDF plugin for Euroscope/RX in progress": ![TAG editor](documentation/ESTagDialog.png)
-1. In the "Tagging level" drop down switch to "tagged"
-1. Once again, click "Add item", and replace the "Next line" selection with "RDF plugin for Euroscope/RX in progress".
-1. Finally, click "Ok" and you are ready to connect to vatsim.
+Inside this file, you will probably see something like this:
+
+> PLUGINS
+> \<eventually existing configuration lines>
+> END
+
+Insert a new line before the END line, and paste this into the new line:
+> RDF Plugin for Euroscope:RGB:0:255:0
+
+...that is, so the file now looks like this:
+
+> PLUGINS
+> \<eventually existing configuration lines>
+> RDF Plugin for Euroscope:RGB:0:255:0
+> END
+
+After restarting Euroscope, the circle and line drawn by the RDF plugin will now be green due to the R=0, G=255, B=0 values. You can of course set it to anything you want, as long as each value is between 0 and 255, both inclusive. In case the plugin fails to parse the line for whatever the reason must be, it will fall back to use the default white color.
+
+## For users of old version 1.0.1:
+There is no longer any custom display type available called "Radio Direction Finder". In case you have modified your .asr file(s) and set the DisplayTypeName:Radio Direction Finder as described in the old documentation, you should change it back to whatever it was before (probably DisplayTypeName:Standard ES radar screen)
+
+Since the plugin now can draw on all display types, I have removed the rather clumsy, flashing tag *** RX *** thingy since it is now needless. You should therefore remove it from your TAG setup, in case you have modified it to use v1.0.1.
+
+Sorry for the inconvenience to users of the old version, but I found the new way of using the plugin much better, as well as easier to install.
 
 ## Questions?
 You can reach me on claus_hemberg.jorgensen (at) vatsim-scandinavia.org
