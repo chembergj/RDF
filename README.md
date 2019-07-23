@@ -34,22 +34,27 @@ No more *"Please say callsign again.."* :smile:
 
 ## Color configuration
 As default, the circle and line is drawn in white. In case you want to customize this, open your plugin configuration file in a text editor. The name and location of the file can be found by clicking  "Other Set", in the menu click "Settings files setup".
-
 Inside this file, you will probably see something like this:
 
-> PLUGINS
-> \<eventually existing configuration lines>
-> END
+```
+PLUGINS
+<eventually existing configuration lines>
+END
+```
+
 
 Insert a new line before the END line, and paste this into the new line:
-> RDF Plugin for Euroscope:RGB:0:255:0
+
+`RDF Plugin for Euroscope:RGB:0:255:0`
 
 ...that is, so the file now looks like this:
 
-> PLUGINS
-> \<eventually existing configuration lines>
-> RDF Plugin for Euroscope:RGB:0:255:0
-> END
+```
+PLUGINS
+<eventually existing configuration lines>
+RDF Plugin for Euroscope:RGB:0:255:0
+END
+```
 
 After restarting Euroscope, the circle and line drawn by the RDF plugin will now be green due to the R=0, G=255, B=0 values. You can of course set it to anything you want, as long as each value is between 0 and 255, both inclusive. In case the plugin fails to parse the line for whatever the reason must be, it will fall back to use the default white color.
 
