@@ -15,6 +15,9 @@ Here is an example of, how you will get the same functionality as shown in the v
 
 ## Installation of plugin
 
+Prerequisites: Microsoft Visual C++ Redistributable for Visual Studio 2015, 2017 and 2019 that can be found here: 
+(https://support.microsoft.com/en-gb/help/2977003/the-latest-supported-visual-c-downloads)
+
 1. For your own sake: make a backup copy of your Euroscope folder with your settings, profiles, asr-files etc. (typically under Documents\Euroscope)
 1. Download the plugin DLL from here: [RDFPlugin.DLL](https://raw.githubusercontent.com/chembergj/RDF/master/Release/RDFPlugin.dll), and move it to your Documents\Euroscope\Plugins folder
 1. Start Euroscope. Click on the menu button "Other SET", and select the "Plug-ins..." menu item. ![ES Plugin menu](documentation/ESPluginMenu.png)
