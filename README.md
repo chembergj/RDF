@@ -1,6 +1,8 @@
 # RDF
 ## Radio Direction Finder plugin for Euroscope
 
+:warning: The current version of the plugin does NOT work with the new Audio for Vatsim - but don't worry, WIP updating the plugin :warning: 
+
 Having problems finding the tag for the aircraft, when the pilot calls you on your frequency? At least I have had challenges with this, when covering large sectors on Vatsim, especially FSS positions. Inspired by this video (https://www.youtube.com/watch?v=KpLKP_CxaLo), showing how RDF works at Eurocontrol, I have developed this plugin, letting Euroscope help you find the calling pilot.
 
 Here is an example of, how you will get the same functionality as shown in the video: highlighting the calling aircraft by drawing a circle around the tag. 
