@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "CRDFPlugin.h"
 #include "CRDFScreen.h"
-#include <wininet.h>
+#include <stdexcept>
 
 #pragma comment(lib, "wininet.lib")
 
@@ -17,11 +17,82 @@ CRDFPlugin::CRDFPlugin()
 		MY_PLUGIN_COPYRIGHT.c_str())
 {
 	DisplayUserMessage("Message", "RDF", std::string("Version " + MY_PLUGIN_VERSION + " loaded").c_str(), false, false, false, false, false);
+
+	RegisterClass(&this->windowClass);
+
+	this->hiddenWindow = CreateWindow(
+		"RDFHiddenWindowClass",
+		"RDFHiddenWindow",
+		NULL,
+		0,
+		0,
+		0,
+		0,
+		NULL,
+		NULL,
+		GetModuleHandle(NULL),
+		reinterpret_cast<LPVOID>(this)
+	);
+
+	if (GetLastError() != S_OK) {
+		DisplayUserMessage(
+			"RDF",
+			"RDF",
+			"Unable to open communications for RDF plugin",
+			true,
+			true,
+			true,
+			true,
+			true
+		);
+	}
+
 }
 
 
 CRDFPlugin::~CRDFPlugin()
 {
+	if (this->hiddenWindow != NULL) {
+		DestroyWindow(this->hiddenWindow);
+	}
+}
+
+/*
+	Process the message queue
+*/
+void CRDFPlugin::OnTimer(int counter)
+{
+	std::lock_guard<std::mutex> lock(this->messageLock);
+
+	// Process any incoming messages from the standalone client
+	while (this->messages.size() != 0) {
+		this->ProcessMessage(this->messages.front());
+		this->messages.pop();
+	}
+}
+
+void CRDFPlugin::AddMessageToQueue(std::string message)
+{
+	std::lock_guard<std::mutex> lock(this->messageLock);
+	this->messages.push(message);
+}
+
+void CRDFPlugin::ProcessMessage(std::string message)
+{
+	if (message.empty()) {
+
+		// Marks end of transmission
+		if (!activeTransmittingPilot.empty())
+		{
+			previousActiveTransmittingPilot = activeTransmittingPilot;
+#ifdef _DEBUG
+			DisplayUserMessage("Message", "RDF Plugin", (std::string("End of transmission for  ") + previousActiveTransmittingPilot).c_str(), false, false, false, false, false);
+#endif
+		}
+	}
+	activeTransmittingPilot = message;
+
+	// TODO: extract callsign list if more than one pilot transmitting
 }
 
 CRadarScreen * CRDFPlugin::OnRadarScreenCreated(const char * sDisplayName,
@@ -72,97 +143,4 @@ CRadarScreen * CRDFPlugin::OnRadarScreenCreated(const char * sDisplayName,
 	}
 
 	return new CRDFScreen(this, rdfRGB);
-}
-
-void CRDFPlugin::OnVoiceReceiveStarted(CGrountToAirChannel Channel)
-{
-	rxcount = 0;
-
-	try
-	{
-		string callsign = GetActivePilotCallsign(Channel.GetVoiceServer(), Channel.GetVoiceChannel());
-		activeTransmittingPilot = callsign;
-	}
-	catch (std::runtime_error const& e)
-	{
-		DisplayUserMessage("Message", "RDF Plugin", (string("Error: ") + e.what()).c_str(), false, false, false, false, false);
-	}
-	catch(...)
-	{
-		DisplayUserMessage("Message", "RDF Plugin", ("Unexpected error: " + std::to_string(GetLastError())).c_str(), false, false, false, false, false);
-	}
-}
-
-void    CRDFPlugin::OnVoiceTransmitStarted(bool OnPrimary)
-{
-#ifdef _DEBUG
-	const char* TestRDFCallsign = GetDataFromSettings("TestRDFCallsign");
-	if (TestRDFCallsign != NULL) {
-		activeTransmittingPilot = TestRDFCallsign;
-	}
-	else
-	{
-		SaveDataToSettings("TestRDFCallsign", "In debug mode: which aircraft to highlight during voice transmit", "Test123");
-	}
-#endif
-}
-
-void CRDFPlugin::OnVoiceTransmitEnded(bool OnPrimary)
-{
-#ifdef _DEBUG
-	previousActiveTransmittingPilot = activeTransmittingPilot;
-	activeTransmittingPilot.clear(); 
-#endif
-}
-
-string CRDFPlugin::GetActivePilotCallsign(string voiceServer, string voiceChannel)
-{
-	string sUrl = "http://" + voiceServer + ":18009?opts=-R-D";
-
-	HINTERNET hConnect = InternetOpen("RDF Agent", INTERNET_OPEN_TYPE_PRECONFIG, NULL, NULL, 0);
-	if (hConnect) {
-		HINTERNET hOpen = InternetOpenUrl(hConnect, sUrl.c_str(), NULL, 0, INTERNET_FLAG_PRAGMA_NOCACHE | INTERNET_FLAG_RELOAD, 0);
-		if (hOpen) {
-			char data[1024];
-			DWORD bytesRead{ 0 };
-			std::string result;
-			while (InternetReadFile(hOpen, data, 1024, &bytesRead) && bytesRead)
-			{
-				result.append(data, bytesRead);
-			}
-			InternetCloseHandle(hOpen);
-			InternetCloseHandle(hConnect);
-
-			// Example:  /enbr_w_appCurrently transmitting: PIP7R (1309217)<br>
-			string searchString = "/" + voiceChannel + "Currently transmitting: ";
-			size_t startpos = result.find(searchString);
-			size_t endpos = result.find("(", startpos);
-			size_t endBRpost = result.find("<br>", startpos);
-			if (endBRpost < endpos)
-			{
-				// <br> found before ) meaning no callsign
-				return "";
-			}
-
-			return result.substr(startpos + searchString.length(), endpos - startpos - searchString.length() - 1);
-		}
-		else {
-			InternetCloseHandle(hConnect);
-			throw runtime_error("Error " + std::to_string(GetLastError()) + " in InternetOpenUrl");
-		}
-	}
-	else
-	{
-		throw runtime_error("Error " + std::to_string(GetLastError()) + " in InternetOpen");
-	}
-
-}
-
-void CRDFPlugin::OnVoiceReceiveEnded(CGrountToAirChannel Channel)
-{
-#ifdef _DEBUG
-	DisplayUserMessage("Message", "RDF Plugin", (std::string("OnVoiceReceiveEnded ") + Channel.GetName()).c_str(), false, false, false, false, false);
-#endif
-	previousActiveTransmittingPilot = activeTransmittingPilot;
-	activeTransmittingPilot.clear();
 }
