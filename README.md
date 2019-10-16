@@ -1,7 +1,5 @@
 # RDF
-## Radio Direction Finder plugin for Euroscope
-
-:warning: The current version of the plugin does NOT work with the new Audio for Vatsim - but don't worry, WIP updating the plugin :warning: 
+## Radio Direction Finder plugin for Euroscope - now with AFV (Audio for Vatsim) support
 
 Having problems finding the tag for the aircraft, when the pilot calls you on your frequency? At least I have had challenges with this, when covering large sectors on Vatsim, especially FSS positions. Inspired by this video (https://www.youtube.com/watch?v=KpLKP_CxaLo), showing how RDF works at Eurocontrol, I have developed this plugin, letting Euroscope help you find the calling pilot.
 
@@ -63,17 +61,14 @@ END
 
 After restarting Euroscope, the circle and line drawn by the RDF plugin will now be green due to the R=0, G=255, B=0 values. You can of course set it to anything you want, as long as each value is between 0 and 255, both inclusive. In case the plugin fails to parse the line for whatever the reason must be, it will fall back to use the default white color.
 
-## For users of old version 1.0.1:
-There is no longer any custom display type available called "Radio Direction Finder". In case you have modified your .asr file(s) and set the DisplayTypeName:Radio Direction Finder as described in the old documentation, you should change it back to whatever it was before (probably DisplayTypeName:Standard ES radar screen)
-
-Since the plugin now can draw on all display types, I have removed the rather clumsy, flashing tag *** RX *** thingy since it is now needless. You should therefore remove it from your TAG setup, in case you have modified it to use v1.0.1.
-
-Sorry for the inconvenience to users of the old version, but I found the new way of using the plugin much better, as well as easier to install.
 
 ## Questions?
 You can reach me on claus_hemberg.jorgensen (at) vatsim-scandinavia.org
 
 (Disclaimer: this is my very first ES plugin, I might not have all the answers :smile: )
+
+## Thanks
+Credit for parts of the Standalone client communication code goes to Andy and his AfvBridge https://github.com/AndyTWF/afv-euroscope-bridge/blob/master/AfvBridge.h
 
 ## Other possibilities
 
