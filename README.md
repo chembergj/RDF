@@ -15,8 +15,11 @@ Here is an example of, how you will get the same functionality as shown in the v
 
 ## Installation of plugin
 
-Prerequisites: Microsoft Visual C++ Redistributable for Visual Studio 2015, 2017 and 2019 that can be found here: 
+Prerequisites: 
+1. Microsoft Visual C++ Redistributable for Visual Studio 2015, 2017 and 2019 that can be found here: 
 (https://support.microsoft.com/en-gb/help/2977003/the-latest-supported-visual-c-downloads)
+1. AFV Standalone Client version 1.6.32 or higher.
+
 
 1. For your own sake: make a backup copy of your Euroscope folder with your settings, profiles, asr-files etc. (typically under Documents\Euroscope)
 1. Download the plugin DLL from here: [RDFPlugin.DLL](https://raw.githubusercontent.com/chembergj/RDF/master/Release/RDFPlugin.dll), and move it to your Documents\Euroscope\Plugins folder
@@ -68,7 +71,7 @@ You can reach me on claus_hemberg.jorgensen (at) vatsim-scandinavia.org
 (Disclaimer: this is my very first ES plugin, I might not have all the answers :smile: )
 
 ## Thanks
-Credit for parts of the Standalone client communication code goes to Andy and his AfvBridge https://github.com/AndyTWF/afv-euroscope-bridge/blob/master/AfvBridge.h
+Credit for parts of the Standalone client communication code goes to Andy and his AfvBridge https://github.com/AndyTWF/afv-euroscope-bridge/
 
 ## Other possibilities
 
