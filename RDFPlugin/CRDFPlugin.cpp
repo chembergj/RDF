@@ -2,6 +2,8 @@
 #include "CRDFPlugin.h"
 #include "CRDFScreen.h"
 #include <stdexcept>
+#include <sstream>
+#include <iostream>
 
 #pragma comment(lib, "wininet.lib")
 
@@ -82,19 +84,58 @@ void CRDFPlugin::ProcessMessage(std::string message)
 	if (message.empty()) {
 
 		// Marks end of transmission
-		if (!activeTransmittingPilot.empty())
+		if (!activeTransmittingPilots.empty())
 		{
-			previousActiveTransmittingPilot = activeTransmittingPilot;
+			previousActiveTransmittingPilots = activeTransmittingPilots;
+			activeTransmittingPilots.clear();
 #ifdef _DEBUG
-			DisplayUserMessage("Message", "RDF Plugin", (std::string("End of transmission for  ") + previousActiveTransmittingPilot).c_str(), false, false, false, false, false);
+			std::string previousActiveTransmittingPilos;
+			for (const auto& piece : previousActiveTransmittingPilots) previousActiveTransmittingPilos += piece;
+
+			DisplayUserMessage("Message", "RDF Plugin", (std::string("End of transmission for  ") + previousActiveTransmittingPilos).c_str(), false, false, false, false, false);
 #endif
 		}
 	}
-	activeTransmittingPilot = message;
 
-	// TODO: extract callsign list if more than one pilot transmitting
+	activeTransmittingPilots = SplitString(message);
 }
 
+set<string> CRDFPlugin::SplitString(string str) {
+	set<string> strings;
+	istringstream f(str);
+	string s;
+	while (getline(f, s, ';')) {
+		cout << s << endl;
+		strings.insert(s);
+	}
+
+	return strings;
+}
+
+COLORREF CRDFPlugin::GetRGB(const char* settingValue)
+{
+	string circleRGB = settingValue;
+
+	size_t firstColonIndex = circleRGB.find(':');
+	if (firstColonIndex != string::npos)
+	{
+		size_t secondColonIndex = circleRGB.find(':', firstColonIndex + 1);
+		if (secondColonIndex != string::npos)
+		{
+			string redString = circleRGB.substr(0, firstColonIndex);
+			string greenString = circleRGB.substr(firstColonIndex + 1, secondColonIndex - firstColonIndex - 1);
+			string blueString = circleRGB.substr(secondColonIndex + 1, circleRGB.size() - secondColonIndex - 1);
+#ifdef _DEBUG
+			DisplayUserMessage("Message", "RDF Plugin", (std::string("R: ") + redString + std::string(" G: ") + greenString + std::string(" B: ") + blueString).c_str(), false, false, false, false, false);
+#endif
+
+			if (!redString.empty() && !greenString.empty() && !blueString.empty())
+			{
+				return RGB(std::stoi(redString), std::stoi(greenString), std::stoi(blueString));
+			}
+		}
+	}
+}
 CRadarScreen * CRDFPlugin::OnRadarScreenCreated(const char * sDisplayName,
 	bool NeedRadarContent,
 	bool GeoReferenced,
@@ -104,33 +145,20 @@ CRadarScreen * CRDFPlugin::OnRadarScreenCreated(const char * sDisplayName,
 	DisplayUserMessage("Message", "RDF Plugin", (std::string("Radio Direction Finder plugin activated on ") + sDisplayName).c_str(), false, false, false, false, false);
 	
 	COLORREF rdfRGB = RGB(255, 255, 255);	// Default: white
+	COLORREF rdfConcurrentTransmissionRGB = RGB(255, 0, 0);	// Default: red
 
 	try
 	{
 		const char* cstrRGB = GetDataFromSettings("RGB");
 		if (cstrRGB != NULL)
 		{
-			string circleRGB = cstrRGB;
+			rdfRGB = GetRGB(cstrRGB);
+		}
 
-			size_t firstColonIndex = circleRGB.find(':');
-			if (firstColonIndex != string::npos)
-			{
-				size_t secondColonIndex = circleRGB.find(':', firstColonIndex + 1);
-				if (secondColonIndex != string::npos)
-				{
-					string redString = circleRGB.substr(0, firstColonIndex);
-					string greenString = circleRGB.substr(firstColonIndex + 1, secondColonIndex - firstColonIndex - 1);
-					string blueString = circleRGB.substr(secondColonIndex + 1, circleRGB.size() - secondColonIndex - 1);
-#ifdef _DEBUG
-					DisplayUserMessage("Message", "RDF Plugin", (std::string("R: ") + redString + std::string(" G: ") + greenString + std::string(" B: ") + blueString).c_str(), false, false, false, false, false);
-#endif
-
-					if (!redString.empty() && !greenString.empty() && !blueString.empty())
-					{
-						rdfRGB = RGB(std::stoi(redString), std::stoi(greenString), std::stoi(blueString));
-					}
-				}
-			}
+		cstrRGB = GetDataFromSettings("ConcurrentTransmissionRGB");
+		if (cstrRGB != NULL)
+		{
+			rdfConcurrentTransmissionRGB = GetRGB(cstrRGB);
 		}
 	}
 	catch (std::runtime_error const& e)
@@ -142,5 +170,5 @@ CRadarScreen * CRDFPlugin::OnRadarScreenCreated(const char * sDisplayName,
 		DisplayUserMessage("Message", "RDF Plugin", ("Unexpected error: " + std::to_string(GetLastError())).c_str(), false, false, false, false, false);
 	}
 
-	return new CRDFScreen(this, rdfRGB);
+	return new CRDFScreen(this, rdfRGB, rdfConcurrentTransmissionRGB);
 }

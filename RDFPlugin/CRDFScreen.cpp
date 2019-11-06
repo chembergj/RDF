@@ -2,10 +2,11 @@
 #include "CRDFScreen.h"
 
 
-CRDFScreen::CRDFScreen(CRDFPlugin *plugin, COLORREF rdfColor)
+CRDFScreen::CRDFScreen(CRDFPlugin *plugin, COLORREF rdfColor, COLORREF rdfConcurrentTransmissionsColor)
 {
 	this->rdfPlugin = plugin;
 	this->rdfColor = rdfColor;
+	this->rdfConcurrentTransmissionsColor = rdfConcurrentTransmissionsColor;
 }
 
 
@@ -25,10 +26,10 @@ void CRDFScreen::OnRefresh(HDC hDC, int Phase)
 		for (CRadarTarget radarTarget = GetPlugIn()->RadarTargetSelectFirst(); radarTarget.IsValid();
 			radarTarget = GetPlugIn()->RadarTargetSelectNext(radarTarget))
 		{
-			if (rdfPlugin->GetActiveTransmittingPilot() == radarTarget.GetCallsign()
+			if (rdfPlugin->GetActiveTransmittingPilots().find(radarTarget.GetCallsign()) != rdfPlugin->GetActiveTransmittingPilots().end()
 				||
-				(rdfPlugin->GetActiveTransmittingPilot().empty() 
-				&& rdfPlugin->GetPreviousActiveTransmittingPilot() == radarTarget.GetCallsign()
+				(rdfPlugin->GetActiveTransmittingPilots().empty() 
+				&& (rdfPlugin->GetPreviousActiveTransmittingPilots().find(radarTarget.GetCallsign()) != rdfPlugin->GetPreviousActiveTransmittingPilots().end())
 				&& (GetKeyState(VK_MBUTTON) == -127 || GetKeyState(VK_MBUTTON) == -128)))
 			{
 				// We are now highlighting either
@@ -39,7 +40,27 @@ void CRDFScreen::OnRefresh(HDC hDC, int Phase)
 				POINT p = ConvertCoordFromPositionToPixel(radarTarget.GetPosition().GetPosition());
 				
 				HGDIOBJ oldBrush = SelectObject(hDC, GetStockObject(HOLLOW_BRUSH));
-				HPEN hPen = CreatePen(PS_SOLID, 1, rdfColor);
+
+				// Which color should be used? rdfColor for single transmission, rdfConcurrentTransmisionsColor for more
+				COLORREF penColor;
+				if (rdfPlugin->GetActiveTransmittingPilots().size() == 1)
+				{
+					penColor = rdfColor;
+				}
+				else if (rdfPlugin->GetActiveTransmittingPilots().size() > 1)
+				{
+					penColor = rdfConcurrentTransmissionsColor;
+				}
+				else if (rdfPlugin->GetPreviousActiveTransmittingPilots().size() == 1)
+				{
+					penColor = rdfColor;
+				}
+				else if (rdfPlugin->GetPreviousActiveTransmittingPilots().size() > 1)
+				{
+					penColor = rdfConcurrentTransmissionsColor;
+				}
+
+				HPEN hPen = CreatePen(PS_SOLID, 1, penColor);
 				HGDIOBJ oldPen = SelectObject(hDC, hPen);
 
 				if (PlaneIsVisible(p, GetRadarArea()))
