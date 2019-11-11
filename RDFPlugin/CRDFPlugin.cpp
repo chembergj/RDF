@@ -104,8 +104,7 @@ set<string> CRDFPlugin::SplitString(string str) {
 	set<string> strings;
 	istringstream f(str);
 	string s;
-	while (getline(f, s, ';')) {
-		cout << s << endl;
+	while (getline(f, s, ':')) {
 		strings.insert(s);
 	}
 
