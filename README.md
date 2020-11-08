@@ -81,7 +81,3 @@ You can reach me on claus_hemberg.jorgensen (at) vatsim-scandinavia.org
 
 ## Thanks
 Credit for parts of the Standalone client communication code goes to Andy and his AfvBridge https://github.com/AndyTWF/afv-euroscope-bridge/
-
-## Other possibilities
-
-In case you are more into MUAC-like features in Euroscope, I can also recommend this plugin: https://github.com/pierr3/UACPlugin, that on top of other features also includes RDF functionality. In case you are only interested in RDF, and don't want to switch to an entirely new radar view, the use of my plugin would probably be preferable.
