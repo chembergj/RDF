@@ -2,11 +2,12 @@
 #include "CRDFScreen.h"
 
 
-CRDFScreen::CRDFScreen(CRDFPlugin *plugin, COLORREF rdfColor, COLORREF rdfConcurrentTransmissionsColor)
+CRDFScreen::CRDFScreen(CRDFPlugin *plugin, COLORREF rdfColor, COLORREF rdfConcurrentTransmissionsColor, int CircleRadius)
 {
 	this->rdfPlugin = plugin;
 	this->rdfColor = rdfColor;
 	this->rdfConcurrentTransmissionsColor = rdfConcurrentTransmissionsColor;
+	this->circleRadius = CircleRadius;
 }
 
 
@@ -65,7 +66,7 @@ void CRDFScreen::OnRefresh(HDC hDC, int Phase)
 
 				if (PlaneIsVisible(p, GetRadarArea()))
 				{
-					Ellipse(hDC, p.x - 50, p.y - 50, p.x + 50, p.y + 50);
+					Ellipse(hDC, p.x - circleRadius, p.y - circleRadius, p.x + circleRadius, p.y + circleRadius);
 				}
 				else
 				{

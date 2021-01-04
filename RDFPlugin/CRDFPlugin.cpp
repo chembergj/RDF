@@ -145,6 +145,7 @@ CRadarScreen * CRDFPlugin::OnRadarScreenCreated(const char * sDisplayName,
 	
 	COLORREF rdfRGB = RGB(255, 255, 255);	// Default: white
 	COLORREF rdfConcurrentTransmissionRGB = RGB(255, 0, 0);	// Default: red
+	int circleRadius = 50;
 
 	try
 	{
@@ -159,6 +160,19 @@ CRadarScreen * CRDFPlugin::OnRadarScreenCreated(const char * sDisplayName,
 		{
 			rdfConcurrentTransmissionRGB = GetRGB(cstrRGB);
 		}
+
+		const char* cstrRadius = GetDataFromSettings("Radius");
+		if (cstrRadius != NULL)
+		{
+			int parsedRadius = atoi(cstrRadius);
+			if (parsedRadius > 0) {
+				circleRadius = parsedRadius;
+
+#ifdef _DEBUG
+				DisplayUserMessage("Message", "RDF Plugin", (std::string("Radius: ") + std::to_string(circleRadius)).c_str(), false, false, false, false, false);
+#endif
+			}
+		}
 	}
 	catch (std::runtime_error const& e)
 	{
@@ -169,5 +183,5 @@ CRadarScreen * CRDFPlugin::OnRadarScreenCreated(const char * sDisplayName,
 		DisplayUserMessage("Message", "RDF Plugin", ("Unexpected error: " + std::to_string(GetLastError())).c_str(), false, false, false, false, false);
 	}
 
-	return new CRDFScreen(this, rdfRGB, rdfConcurrentTransmissionRGB);
+	return new CRDFScreen(this, rdfRGB, rdfConcurrentTransmissionRGB, circleRadius);
 }

@@ -45,8 +45,8 @@ No more *"Please say callsign again.."* :smile:
 1. If the aircraft is outside your radar view, a line is drawn from the screen centre in the direction of the aircraft. Scroll in the direction and you will find the aircraft. 
 1. In case you forgot, which aircraft just called, just press the middle button of your mouse, and the circle will be drawn again.
 1. In case of simultaneous transmissions, the plugin works in the same way, except that a red color is used for drawing a circle around each aircraft or a line to each aircraft outside the radar view. 
-## Color configuration
-As default, the circle and line is drawn in white, and in case of simulatenous transmissions, in red. In case you want to customize this, open your plugin configuration file in a text editor. The name and location of the file can be found by clicking  "Other Set", in the menu click "Settings files setup".
+## Configuration of color and radius
+As default, the circle and line is drawn in white, and in case of simulatenous transmissions, in red. Default radius for RDF circle is 50. In case you want to customize this, open your plugin configuration file in a text editor. The name and location of the file can be found by clicking  "Other Set", in the menu click "Settings files setup".
 Inside this file, you will probably see something like this:
 
 ```
@@ -60,6 +60,7 @@ Insert a new line before the END line, and paste this into the new line:
 
 `RDF Plugin for Euroscope:RGB:0:255:0`
 `RDF Plugin for Euroscope:ConcurrentTransmissionRGB:0:255:0`
+`RDF Plugin for Euroscope:Radius:50
 
 ...that is, so the file now looks like this:
 
@@ -68,11 +69,13 @@ PLUGINS
 <eventually existing configuration lines>
 RDF Plugin for Euroscope:RGB:0:255:0
 RDF Plugin for Euroscope:ConcurrentTransmissionRGB:255:255:0
+RDF Plugin for Euroscope:Radius:50
 END
 ```
 
 After restarting Euroscope, the circle and line drawn by the RDF plugin will now be green due to the R=0, G=255, B=0 values, and yellow for concurrent transmission due to the R=255, G=255, B=0 values. You can of course set it to anything you want, as long as each value is between 0 and 255, both inclusive. In case the plugin fails to parse the line for whatever the reason must be, it will fall back to use the default white and red color.
 
+The circle radius will now also be slightly larger, 60 instead of default 50.
 
 ## Questions?
 You can reach me on claus_hemberg.jorgensen (at) vatsim-scandinavia.org
