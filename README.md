@@ -60,7 +60,7 @@ Insert a new line before the END line, and paste this into the new line:
 
 `RDF Plugin for Euroscope:RGB:0:255:0`
 `RDF Plugin for Euroscope:ConcurrentTransmissionRGB:0:255:0`
-`RDF Plugin for Euroscope:Radius:60
+`RDF Plugin for Euroscope:Radius:60`
 
 ...that is, so the file now looks like this:
 
